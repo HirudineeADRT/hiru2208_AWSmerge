@@ -3,17 +3,7 @@ let clusterManager = require('./ClusterManager');
 const redis = new SL_REDIS.Redis(clusterManager);
 
 exports.handler = function (event, context, callback) {
-    // You must always quit the redis client after it's used
-    redis.del({
-        clusterIdentifier: 'hirutest',
-        params: ['hiru1', 'update']
-    }, function (error, response, redisClient) {
-        if (error) {
-            callback(error);
-        } else {
-            //redisClient.quit();
-        }
-    });
+
 
     callback(null, { "message": "Successfully executed" });
 }
