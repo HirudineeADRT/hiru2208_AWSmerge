@@ -8,7 +8,10 @@
         "type": "DIRECTORY",
         "isDirectory": true,
         "children": [
-          "8843dadc-5de8-462a-9f6b-06c58c6c2889"
+          "8843dadc-5de8-462a-9f6b-06c58c6c2889",
+          "139812cb-4393-47ea-be80-f581705404dd",
+          "9c9d2fb5-b1a6-4e9b-b12d-09f29b7b5654",
+          "f355cb11-4147-429e-be6e-8f681656871d"
         ],
         "isRemovable": false,
         "filePath": "hiru2208_AWSmerge"
@@ -22,6 +25,57 @@
         "children": [],
         "isRemovable": true,
         "filePath": "hiru2208_AWSmerge/lambda.js",
+        "code": "let SL_REDIS = require('slappforge-sdk-redis');\nlet clusterManager = require('./ClusterManager');\nconst redis = new SL_REDIS.Redis(clusterManager);\n\nexports.handler = function (event, context, callback) {\n    // You must always quit the redis client after it's used\n    redis.del({\n        clusterIdentifier: 'hirutest',\n        params: ['hiru1', 'update']\n    }, function (error, response, redisClient) {\n        if (error) {\n            callback(error);\n        } else {\n            //redisClient.quit();\n        }\n    });\n\n    callback(null, { \"message\": \"Successfully executed\" });\n}",
+        "config": {
+          "runtime": "nodejs8.10",
+          "handler": "handler",
+          "timeout": 60,
+          "memory": 128,
+          "layers": []
+        },
+        "triggers": [],
+        "customSecurityPolicy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Deny",
+              "Resource": "arn:aws:execute-api:us-east-1::///",
+              "Action": [
+                "*"
+              ]
+            }
+          ]
+        },
+        "testCases": {
+          "4676a99e-1a9b-4103-b7f2-bcd110210737": {
+            "id": "4676a99e-1a9b-4103-b7f2-bcd110210737",
+            "name": "Test event",
+            "functionId": "8843dadc-5de8-462a-9f6b-06c58c6c2889",
+            "event": "{\r\n    \"key1\": \"value1\",\r\n    \"key2\": \"value2\",\r\n    \"key3\": \"value3\"\r\n}",
+            "eventTemplate": "hello-world"
+          }
+        }
+      },
+      "139812cb-4393-47ea-be80-f581705404dd": {
+        "id": "139812cb-4393-47ea-be80-f581705404dd",
+        "parent": "4f4e221e-c3de-4a7b-8f23-6058696ee19e",
+        "name": "test.js",
+        "type": "JS_FILE",
+        "isDirectory": false,
+        "children": [],
+        "isRemovable": true,
+        "filePath": "hiru2208_AWSmerge/test.js",
+        "code": ""
+      },
+      "9c9d2fb5-b1a6-4e9b-b12d-09f29b7b5654": {
+        "id": "9c9d2fb5-b1a6-4e9b-b12d-09f29b7b5654",
+        "parent": "4f4e221e-c3de-4a7b-8f23-6058696ee19e",
+        "name": "sample11.js",
+        "type": "JS_LAMBDA",
+        "isDirectory": false,
+        "children": [],
+        "isRemovable": true,
+        "filePath": "hiru2208_AWSmerge/sample11.js",
         "code": "exports.handler = function(event, context, callback) {\n    \n    callback(null, {\"message\": \"Successfully executed\"});\n}",
         "config": {
           "runtime": "nodejs8.10",
@@ -30,16 +84,98 @@
           "memory": 128,
           "layers": []
         },
-        "triggers": []
+        "triggers": [],
+        "testCases": {}
+      },
+      "f355cb11-4147-429e-be6e-8f681656871d": {
+        "id": "f355cb11-4147-429e-be6e-8f681656871d",
+        "parent": "4f4e221e-c3de-4a7b-8f23-6058696ee19e",
+        "name": "ClusterManager.js",
+        "type": "JS_FILE",
+        "isDirectory": false,
+        "children": [],
+        "isRemovable": true,
+        "filePath": "hiru2208_AWSmerge/ClusterManager.js",
+        "code": "module.exports = function() {\n    this.clusters = [];\n\n    this.clusters[\"hirutest\"] = {\n        host: process.env.EndPoint_redisHirutest,\n        port: 6379,\n        clusterModeEnabled: false\n    };\n};"
       }
     },
     "deletedFiles": [],
     "rootNode": "4f4e221e-c3de-4a7b-8f23-6058696ee19e",
     "openFiles": [
-      "8843dadc-5de8-462a-9f6b-06c58c6c2889"
+      "8843dadc-5de8-462a-9f6b-06c58c6c2889",
+      "139812cb-4393-47ea-be80-f581705404dd",
+      "9c9d2fb5-b1a6-4e9b-b12d-09f29b7b5654"
     ],
     "currentFileId": "8843dadc-5de8-462a-9f6b-06c58c6c2889",
-    "resources": {},
+    "resources": {
+      "redis-hirutest": {
+        "name": "redis-hirutest",
+        "type": "Redis",
+        "config": {
+          "clusterConfig": {
+            "engineType": "redis",
+            "clusterSpec": {
+              "instanceFamily": "m3",
+              "nodeTypeClass": "cache.m3.medium",
+              "engineVersion": "5.0.4",
+              "clusterModeEnabled": false,
+              "autoFailoverEnabled": false,
+              "numOfShards": 3,
+              "numOfReplicas": "1"
+            },
+            "clusterSetting": {
+              "clusterName": "hirutest",
+              "clusterDescription": "this is 1.3.5 QA testing cycle",
+              "port": 6379
+            },
+            "vpcSpec": {
+              "vpcType": "EXISTING",
+              "existingVPC": {
+                "vpcID": "vpc-ee1ef195",
+                "subNetID": "subnet-993076a6",
+                "securityGroupID": "sg-00c0e38b3ca019399"
+              },
+              "newVPC": {
+                "vpcName": "vpchirutest",
+                "vpcIPv4CIDR": "10.0.0.0/16",
+                "subnetName": "subnettesthiru",
+                "subnetIPv4CIDR": "10.0.0.0/20"
+              }
+            },
+            "host": "",
+            "doesExist": false,
+            "alreadyDeployed": false,
+            "redisClient": "",
+            "external": false
+          },
+          "clusterResources": [],
+          "editMode": true,
+          "enableInject": true,
+          "isGlobalEditMode": false,
+          "isClusterSelectionValid": true,
+          "isNewFromGlobal": false,
+          "operation": {
+            "str": "REDIS_DEL",
+            "operation": "del",
+            "displayName": "DELETE",
+            "type": {
+              "str": "REDIS_KEYS",
+              "type": "keys",
+              "displayName": "KEYS"
+            }
+          },
+          "mode": 0,
+          "params": [],
+          "projectRegion": "us-east-1",
+          "reusableMode": false,
+          "showOperations": true,
+          "validator": {
+            "validatableFields": {},
+            "validity": true
+          }
+        }
+      }
+    },
     "customTemplate": {
       "dialect": null,
       "definitions": {}
@@ -55,7 +191,15 @@
       }
     ],
     "packageJSON": {
-      "dependencies": {}
+      "dependencies": {
+        "slappforge-sdk-redis": {
+          "name": "slappforge-sdk-redis",
+          "language": "javascript",
+          "version": "0.0.3",
+          "dev": false,
+          "notRemovable": false
+        }
+      }
     }
   },
   "PROJECT_META": {
@@ -65,7 +209,7 @@
     "projectRegion": "us-east-1",
     "platform": "AWS",
     "platformRegions": {},
-    "lastSave": 1566536906665
+    "lastSave": 1566539270944
   },
   "VCS_STATE": {
     "provider": "GitHub",
