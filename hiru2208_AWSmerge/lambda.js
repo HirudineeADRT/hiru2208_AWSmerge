@@ -5,27 +5,13 @@ const redis = new SL_REDIS.Redis(clusterManager);
 exports.handler = function (event, context, callback) {
     // You must always quit the redis client after it's used
     redis.type({
-        clusterIdentifier: 'hirutest02',
-        params: ['hiru']
+        clusterIdentifier: 'testhiru',
+        params: ['test']
     }, function (error, response, redisClient) {
         if (error) {
             callback(error);
         } else {
             redisClient.quit();
-        }
-    });
-
-
-    // You must always quit the redis client after it's used
-    // You must always quit the redis client after it's used
-    redis.del({
-        clusterIdentifier: 'sample',
-        params: ['aa']
-    }, function (error, response, redisClient) {
-        if (error) {
-            callback(error);
-        } else {
-            //redisClient.quit();
         }
     });
 

@@ -25,7 +25,7 @@
         "children": [],
         "isRemovable": true,
         "filePath": "hiru2208_AWSmerge/lambda.js",
-        "code": "let SL_REDIS = require('slappforge-sdk-redis');\nlet clusterManager = require('./ClusterManager');\nconst redis = new SL_REDIS.Redis(clusterManager);\n\nexports.handler = function (event, context, callback) {\n    // You must always quit the redis client after it's used\n    redis.type({\n        clusterIdentifier: 'hirutest02',\n        params: ['hiru']\n    }, function (error, response, redisClient) {\n        if (error) {\n            callback(error);\n        } else {\n            redisClient.quit();\n        }\n    });\n\n\n    // You must always quit the redis client after it's used\n    // You must always quit the redis client after it's used\n    redis.del({\n        clusterIdentifier: 'sample',\n        params: ['aa']\n    }, function (error, response, redisClient) {\n        if (error) {\n            callback(error);\n        } else {\n            //redisClient.quit();\n        }\n    });\n\n\n\n    callback(null, { \"message\": \"Successfully executed\" });\n}",
+        "code": "let SL_REDIS = require('slappforge-sdk-redis');\nlet clusterManager = require('./ClusterManager');\nconst redis = new SL_REDIS.Redis(clusterManager);\n\nexports.handler = function (event, context, callback) {\n    // You must always quit the redis client after it's used\n    redis.type({\n        clusterIdentifier: 'testhiru',\n        params: ['test']\n    }, function (error, response, redisClient) {\n        if (error) {\n            callback(error);\n        } else {\n            redisClient.quit();\n        }\n    });\n\n\n\n    callback(null, { \"message\": \"Successfully executed\" });\n}",
         "config": {
           "runtime": "nodejs8.10",
           "handler": "handler",
@@ -96,7 +96,7 @@
         "children": [],
         "isRemovable": true,
         "filePath": "hiru2208_AWSmerge/ClusterManager.js",
-        "code": "module.exports = function() {\n    this.clusters = [];\n\n    this.clusters[\"sample\"] = {\n        host: process.env.EndPoint_redisSample,\n        port: 6379,\n        clusterModeEnabled: false\n    };\n    this.clusters[\"hirutest02\"] = {\n        host: process.env.EndPoint_redisHirutest02,\n        port: 6379,\n        clusterModeEnabled: false\n    };\n    this.clusters[\"hiru123\"] = {\n        host: process.env.EndPoint_redisHiru123,\n        port: 6379,\n        clusterModeEnabled: false\n    };\n};"
+        "code": "module.exports = function() {\n    this.clusters = [];\n\n    this.clusters[\"testhiru\"] = {\n        host: process.env.EndPoint_redisTesthiru,\n        port: 6379,\n        clusterModeEnabled: false\n    };\n    this.clusters[\"hirutest02\"] = {\n        host: process.env.EndPoint_redisHirutest02,\n        port: 6379,\n        clusterModeEnabled: false\n    };\n    this.clusters[\"hiru123\"] = {\n        host: process.env.EndPoint_redisHiru123,\n        port: 6379,\n        clusterModeEnabled: false\n    };\n    this.clusters[\"sample\"] = {\n        host: process.env.EndPoint_redisSample,\n        port: 6379,\n        clusterModeEnabled: false\n    };\n};"
       }
     },
     "deletedFiles": [],
@@ -311,6 +311,73 @@
             "validity": true
           }
         }
+      },
+      "redis-testhiru": {
+        "name": "redis-testhiru",
+        "type": "Redis",
+        "config": {
+          "clusterConfig": {
+            "engineType": "redis",
+            "clusterSpec": {
+              "instanceFamily": "m3",
+              "nodeTypeClass": "cache.m3.medium",
+              "engineVersion": "5.0.4",
+              "clusterModeEnabled": false,
+              "autoFailoverEnabled": true,
+              "numOfShards": 3,
+              "numOfReplicas": "0"
+            },
+            "clusterSetting": {
+              "clusterName": "testhiru",
+              "clusterDescription": "third es",
+              "port": 6379
+            },
+            "vpcSpec": {
+              "vpcType": "EXISTING",
+              "existingVPC": {
+                "vpcID": "vpc-ee1ef195",
+                "subNetID": "subnet-993076a6",
+                "securityGroupID": "sg-00c0e38b3ca019399"
+              },
+              "newVPC": {
+                "vpcName": "",
+                "vpcIPv4CIDR": "10.0.0.0/16",
+                "subnetName": "",
+                "subnetIPv4CIDR": "10.0.0.0/20"
+              }
+            },
+            "host": "",
+            "doesExist": false,
+            "alreadyDeployed": false,
+            "redisClient": "",
+            "external": false
+          },
+          "clusterResources": [],
+          "editMode": false,
+          "enableInject": true,
+          "isGlobalEditMode": false,
+          "isClusterSelectionValid": true,
+          "isNewFromGlobal": false,
+          "mode": 0,
+          "operation": {
+            "str": "REDIS_TYPE",
+            "operation": "type",
+            "displayName": "TYPE",
+            "type": {
+              "str": "REDIS_KEYS",
+              "type": "keys",
+              "displayName": "KEYS"
+            }
+          },
+          "params": [],
+          "projectRegion": "us-east-1",
+          "reusableMode": false,
+          "showOperations": true,
+          "validator": {
+            "validatableFields": {},
+            "validity": true
+          }
+        }
       }
     },
     "customTemplate": {
@@ -346,7 +413,7 @@
     "projectRegion": "us-east-1",
     "platform": "AWS",
     "platformRegions": {},
-    "lastSave": 1566558081420
+    "lastSave": 1566558238747
   },
   "VCS_STATE": {
     "provider": "GitHub",
