@@ -25,7 +25,7 @@
         "children": [],
         "isRemovable": true,
         "filePath": "hiru2208_AWSmerge/lambda.js",
-        "code": "let SL_REDIS = require('slappforge-sdk-redis');\nlet clusterManager = require('./ClusterManager');\nconst redis = new SL_REDIS.Redis(clusterManager);\n\nexports.handler = function (event, context, callback) {\n\n\n    callback(null, { \"message\": \"Successfully executed\" });\n}",
+        "code": "let SL_REDIS = require('slappforge-sdk-redis');\nlet clusterManager = require('./ClusterManager');\nconst redis = new SL_REDIS.Redis(clusterManager);\n\nexports.handler = function (event, context, callback) {\n    // You must always quit the redis client after it's used\n    redis.type({\n        clusterIdentifier: 'hirutest02',\n        params: ['hiru']\n    }, function (error, response, redisClient) {\n        if (error) {\n            callback(error);\n        } else {\n            redisClient.quit();\n        }\n    });\n\n\n    callback(null, { \"message\": \"Successfully executed\" });\n}",
         "config": {
           "runtime": "nodejs8.10",
           "handler": "handler",
@@ -96,7 +96,7 @@
         "children": [],
         "isRemovable": true,
         "filePath": "hiru2208_AWSmerge/ClusterManager.js",
-        "code": "module.exports = function() {\n    this.clusters = [];\n\n    this.clusters[\"hirutest\"] = {\n        host: process.env.EndPoint_redisHirutest,\n        port: 6379,\n        clusterModeEnabled: false\n    };\n};"
+        "code": "module.exports = function() {\n    this.clusters = [];\n\n    this.clusters[\"hirutest02\"] = {\n        host: process.env.EndPoint_redisHirutest02,\n        port: 6379,\n        clusterModeEnabled: false\n    };\n};"
       }
     },
     "deletedFiles": [],
@@ -107,7 +107,75 @@
       "9c9d2fb5-b1a6-4e9b-b12d-09f29b7b5654"
     ],
     "currentFileId": "8843dadc-5de8-462a-9f6b-06c58c6c2889",
-    "resources": {},
+    "resources": {
+      "redis-hirutest02": {
+        "name": "redis-hirutest02",
+        "type": "Redis",
+        "config": {
+          "clusterConfig": {
+            "engineType": "redis",
+            "clusterSpec": {
+              "instanceFamily": "t2",
+              "nodeTypeClass": "cache.t2.small",
+              "engineVersion": "5.0.4",
+              "clusterModeEnabled": false,
+              "autoFailoverEnabled": true,
+              "numOfShards": 3,
+              "numOfReplicas": "0"
+            },
+            "clusterSetting": {
+              "clusterName": "hirutest02",
+              "clusterDescription": "this is the second ec - 1.3.5",
+              "port": 6379
+            },
+            "vpcSpec": {
+              "vpcType": "EXISTING",
+              "existingVPC": {
+                "vpcID": "vpc-ee1ef195",
+                "subNetID": "subnet-73cfb75c",
+                "securityGroupID": "sg-034c5a74fa1357055"
+              },
+              "newVPC": {
+                "vpcName": "",
+                "vpcIPv4CIDR": "10.0.0.0/16",
+                "subnetName": "",
+                "subnetIPv4CIDR": "10.0.0.0/20"
+              }
+            },
+            "host": "",
+            "doesExist": false,
+            "alreadyDeployed": false,
+            "redisClient": "",
+            "external": false
+          },
+          "clusterResources": [],
+          "editMode": false,
+          "enableInject": true,
+          "isGlobalEditMode": false,
+          "isClusterSelectionValid": true,
+          "isNewFromGlobal": false,
+          "mode": 0,
+          "operation": {
+            "str": "REDIS_TYPE",
+            "operation": "type",
+            "displayName": "TYPE",
+            "type": {
+              "str": "REDIS_KEYS",
+              "type": "keys",
+              "displayName": "KEYS"
+            }
+          },
+          "params": [],
+          "projectRegion": "us-east-1",
+          "reusableMode": false,
+          "showOperations": true,
+          "validator": {
+            "validatableFields": {},
+            "validity": true
+          }
+        }
+      }
+    },
     "customTemplate": {
       "dialect": null,
       "definitions": {}
@@ -141,7 +209,7 @@
     "projectRegion": "us-east-1",
     "platform": "AWS",
     "platformRegions": {},
-    "lastSave": 1566548354185
+    "lastSave": 1566548966562
   },
   "VCS_STATE": {
     "provider": "GitHub",
