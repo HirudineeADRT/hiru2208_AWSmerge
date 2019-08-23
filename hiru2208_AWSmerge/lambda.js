@@ -16,5 +16,20 @@ exports.handler = function (event, context, callback) {
     });
 
 
+    // You must always quit the redis client after it's used
+    // You must always quit the redis client after it's used
+    redis.del({
+        clusterIdentifier: 'sample',
+        params: ['aa']
+    }, function (error, response, redisClient) {
+        if (error) {
+            callback(error);
+        } else {
+            //redisClient.quit();
+        }
+    });
+
+
+
     callback(null, { "message": "Successfully executed" });
 }
